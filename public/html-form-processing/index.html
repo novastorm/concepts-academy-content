@@ -15,9 +15,8 @@
 		<ul>
 			<li>Create a CGI responder.</li>
 			<li>Test the script</li>
-			<li>Test program using cURL</li>
 			<li>CGI Input</li>
-			<li>Create HTML form</li>
+			<li>Using an HTML form</li>
 		</ul>
 		<h3>Create a CGI responder</h3>
 		<p>Create a responder.php file on the website with the following code:</p>
@@ -28,10 +27,11 @@
 </pre>
 
 		<h3>Test the script</h3>
+		<p>Test the script on the server</p>
 		<pre>
 php responder.php
 </pre>
-		<p>Test program using cURL</p>
+		<p>Remotely test program using cURL</p>
 		<pre>
 curl -k <b>"http://__URL__/response.php"</b>
 </pre>
@@ -50,7 +50,7 @@ Hello
 		<pre>
 curl -k <b>"http://__URL__/response.php?key_1=value_1&key_2=value_2"</b>
 </pre>
-		<p>Test program using a POST request. On a *nix server command line enter:</p>
+		<p>Test program using a cURL POST request. On a *nix server command line enter:</p>
 		<pre>
 curl -k <b>"http://__URL__/response.php" -X POST -d "key_1=value_1&key_2=value_2"</b>
 </pre>
