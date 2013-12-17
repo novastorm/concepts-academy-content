@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap-theme.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="page-header">
+			<h1>HTML Form Processing</h1>
+			<p class="lead">This tutorial walks you through the creation of a CGI program that responds with the input values passed from an HTML form.</p>
+			<p>* This tutorial intends to walk you through the concept of CGI form processing and is designed to be langauge agnostic. Although this tutorial uses PHP as the server side programming language, the concepts can be coded in any language.</p>
+		</div>
+		<ul>
+			<li>CGI responder</li>
+			<li>CGI Input</li>
+			<li>HTML form submission</li>
+			<li>HTML generator</li>
+		</ul>
+		<h3>CGI responder</h3>
+		<p>Create a responder.<b>php</b> file on the website with the following code:</p>
+		<pre>
+&lt;?php
+    print "Hello\n";
+?>
+</pre>
+
+		<h4>Test the program</h4>
+		<p>Test the program on the server</p>
+		<pre>
+php responder.php
+</pre>
+		<p>Remotely test program using cURL</p>
+		<pre>
+curl -k <b>"http://__URL__/response.php"</b>
+</pre>
+		<p>The server should respond to both with the following:</p>
+		<pre>
+Hello
+</pre>
+
+		<h3>CGI Input</h3>
+		Update the responder.<b>php</b> to the following code:</p>
+		<pre>
+&lt;?php
+    print $_REQUEST;
+?>
+</pre>
+		<p>Show the results of an HTTP GET request. On a *nix server command line enter:</p>
+		<pre>
+curl -k <b>"http://__URL__/response.php?key_1=value_1&key_2=value_2"</b>
+</pre>
+		<p>Show the results of an HTTP POST request. On a *nix server command line enter:</p>
+		<pre>
+curl -k <b>"http://__URL__/response.php" -X POST -d "key_1=value_1&key_2=value_2"</b>
+</pre>
+		<p>Show the results using a web browser. Enter the URL into the web browser:</p>
+		<pre>
+<b>http://__URL__/response.php" -X POST -d "key_1=value_1&key_2=value_2</b>
+</pre>
+		<p>The server should respond with the following:</p>
+		<pre>
+Array
+</pre>
+		<p>As appropriate a response as this is, let's see what the contents of the array are.</p>
+		<p>Update the program to print the contents of the request inputs.</p>
+		<pre>
+&lt;?php
+    print json_encode($_REQUEST);
+?>
+</pre>
+
+		<p>The server should respond with the following JSON representation of the request inputs:</p>
+		<pre>
+{"key_1":"value_1","key_2":"value_2"}
+</pre>
+
+		<p>Since the request is an data structure we can also access the keys individually.</p>
+		<pre>
+&lt;?php
+    print $_REQUEST['key_1'];
+?>
+</pre>
+		<p>The server should respond with the following:</p>
+		<pre>
+value_1
+</pre>
+		<h4>Exercises</h4>
+		<ul>
+			<li>Create a program that returns the value of 'key_2'.</li>
+			<li>Create a lirogram that returns the values of your own custom keys and values.</li>
+		</ul>
+
+		<h3>HTML form submission</h3>
+		Update the responder.<b>php</b> to the following code:</p>
+		<pre>
+&lt;?php
+    print $_REQUEST;
+?>
+</pre>
+		<p>Create a responder.<b>html</b> file on the website with the following code:</p>
+		<pre><!DOCTYPE html>
+&lt;html lang="en">
+&lt;body>
+    &lt;form method="post" action="responder.php">
+        &lt;label for="first-name">First&lt;/label>
+        &lt;input name="first-name" placeholder="First">&lt;/label>
+        &lt;label for="last-name">Last&lt;/label>
+        &lt;input name="last-name" placeholder="Last">&lt;/label>
+
+        &lt;button>Submit&lt;/button>
+    &lt;/form>
+&lt;/body>
+&lt;/html>
+</pre>
+
+		<p>The server should respond with the following:</p>
+		<pre>
+{"name":"XXXX"}
+</pre>
+
+		<p>Let's make the responder return an page with a greeting. Update responder.<b>php</b> to the following:</p>
+		<pre>
+&lt;?php
+    $name = $_REQUEST['name'];
+    if ($name == '') {
+        $name = 'World';
+    }
+    print "Hello $name."; 
+?>
+</pre>
+
+		<h4>Exercises</h4>
+		<ul>
+			<li>Experiment with printing various inputs and responses.</li>
+		</ul>
+
+
+		<h3>HTML generator</h3>
+		<p>The responder can even generate the initial HTML form. Update responder.php to the following:</p>
+		<pre>
+&lt;?php
+
+    $greeting;
+
+    if ($_REQUEST) {
+        $name = 'World';
+        if ($_REQUEST['name'] != '') {
+            $name = $_REQUEST['name'];
+        }
+        $greeting = "Hello $name.";
+    }
+
+    $form = "
+&lt;!DOCTYPE html>
+&lt;html lang=\"en\">
+&lt;body>
+    &lt;form method=\"post\" action=\"responder.php\">
+        &lt;label for=\"name\">Name&lt;/label>
+        &lt;input name=\"name\" placeholder=\"Your Name\">&lt;/label>
+        &lt;button>Submit&lt;/button>
+    &lt;/form>
+    &lt;br>
+    $greeting
+&lt;/body>
+&lt;/html>
+    ";
+
+    print $form;
+?>
+</pre>
+
+		<p>Remotely test program using cURL</p>
+		<pre>
+curl -k <b>"http://__URL__/response.php"</b>
+</pre>
+
+		<h4>Exercises</h4>
+		<ul>
+			<li>Experiment with printing various HTML inputs and responses.</li>
+		</ul>
+
+		<h3>Conclusion</h3>
+		<p>That wraps up the HTML form processing tutorial.</p>
+		<p>You have created a program that responds to web form input and dynamically generates a response. Additionally, you have integrated the initial page display into the responder and thus, created a single URL access point to your site.</p>
+		<p>There are more advanced techniques which involve completely separating the user interface from the server data and logic. These will be covered in subsequent tutorials. For now, experiment with your own basic form processor.<p>
+		<p>Have fun generating your own dynamic web forms!</p>
+
+	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+</body>
+</html>
+
