@@ -100,7 +100,8 @@ value_1
 ?>
 </pre>
 		<p>Create a responder.<b>html</b> file on the website with the following code:</p>
-		<pre><!DOCTYPE html>
+		<pre>
+&lt;!DOCTYPE html>
 &lt;html lang="en">
 &lt;body>
     &lt;form method="post" action="responder.php">
@@ -141,7 +142,6 @@ value_1
 		<p>The responder can even generate the initial HTML form. Update responder.php to the following:</p>
 		<pre>
 &lt;?php
-
     $greeting;
 
     if ($_REQUEST) {
@@ -165,7 +165,7 @@ value_1
     $greeting
 &lt;/body>
 &lt;/html>
-    ";
+";
 
     print $form;
 ?>
