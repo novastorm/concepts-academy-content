@@ -26,8 +26,18 @@
 		</ul>
 		<h3>Design Specifications</h3>
 
-		<h3>CGI responder</h3>
-		<p>Create a responder.<b>php</b> file on the website with the following code:</p>
+		<div class="panel-group" id="CGI_Responder_Section">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#CGI_Responder_Section" href="#CGI_Responder">
+							CGI responder
+						</a>
+					</h4>
+				</div>
+				<div id="CGI_Responder" class="panel-collapse collapse">
+					<div class="panel-body">
+						<p>Create a responder.<b>php</b> file on the website with the following code:</p>
 		<pre>
 &lt;?php
     print "Hello\n";
@@ -47,6 +57,11 @@ curl -k <b>"http://__URL__/response.php"</b>
 		<pre>
 Hello
 </pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
 
 		<h3>SQL Tables</h3>
 		<p>Creating a Database table.</p>
@@ -164,6 +179,7 @@ $todo->create();
 
 
 	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
 </body>
 </html>

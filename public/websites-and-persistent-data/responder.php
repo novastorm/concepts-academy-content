@@ -6,16 +6,16 @@ include 'Database.php';
 include 'Todo.php';
 
 $dbh = Database::initialize(
-	  Config::Hostname
-	, Config::Username
-	, Config::Password
-	, Config::Database
-	);
+      Config::Hostname
+    , Config::Username
+    , Config::Password
+    , Config::Database
+    );
 
 $todo = new Todo(
-	  Config::Table_Prefix
-	, $dbh
-	);
+      Config::Table_Prefix
+    , $dbh
+    );
 
 $todo->create();
 
