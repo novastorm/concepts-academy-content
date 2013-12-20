@@ -24,58 +24,131 @@
 			<li>SQL Queries</li>
 			<li>SQL Injection prevention</li>
 		</ul>
-		<h3>Design Specifications</h3>
 
-		<div class="panel-group" id="CGI_Responder_Section">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<a data-toggle="collapse" data-parent="#CGI_Responder_Section" href="#CGI_Responder">
-							CGI responder
+		<div class="row">
+			<div class="panel-group" id="Design_Specifications_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#Design_Specifications_Section" href="#Design_Specifications">
+							<h4 class="panel-title">
+									Design Specifications
+							</h4>
 						</a>
-					</h4>
+					</div>
+					<div id="Design_Specifications" class="panel-collapse collapse">
+						<div class="panel-body">
+							TODO: Add Design Specifications diagram.
+						</div>
+					</div>
 				</div>
-				<div id="CGI_Responder" class="panel-collapse collapse">
-					<div class="panel-body">
-						<p>Create a responder.<b>php</b> file on the website with the following code:</p>
-		<pre>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="CGI_Responder_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#CGI_Responder_Section" href="#CGI_Responder">
+							<h4 class="panel-title">
+								CGI responder
+							</h4>
+						</a>
+					</div>
+					<div id="CGI_Responder" class="panel-collapse collapse">
+						<div class="panel-body">
+<p>Create a responder.<b>php</b> file on the website with the following code:</p>
+<pre>
 &lt;?php
     print "Hello\n";
 ?>
 </pre>
 
-		<h4>Test the program</h4>
-		<p>Test the program on the server</p>
-		<pre>
+<h4>Test the program</h4>
+<p>Test the program on the server</p>
+<pre>
 php responder.php
 </pre>
-		<p>Remotely test program using cURL</p>
-		<pre>
+
+<p>Remotely test program using cURL</p>
+<pre>
 curl -k <b>"http://__URL__/response.php"</b>
 </pre>
-		<p>The server should respond to both with the following:</p>
-		<pre>
+
+<p>The server should respond to both with the following:</p>
+<pre>
 Hello
 </pre>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="SQL_Tables_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#SQL_Tables_Section" href="#SQL_Tables">
+							<h4 class="panel-title">
+								SQL Tables
+							</h4>
+						</a>
+					</div>
+					<div id="SQL_Tables" class="panel-collapse collapse">
+						<div class="panel-body">
+<p>Creating a Database table.</p>
 
+<p>Create the following files:</p>
 
-		<h3>SQL Tables</h3>
-		<p>Creating a Database table.</p>
+							<div class="panel-group" id="SQL_Tables_Files_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
 
-		<p>Create the following files:
-			<ul>
-				<li>Config.php</li>
-				<li>Database.php</li>
-				<li>Todo.php</li>
-			</ul>
-		</p>
+include 'Config.php';
+include 'Database.php';
+include 'Todo.php';
 
-		<p>Config.php
-		<pre>
+$dbh = Database::initialize(
+      Config::Hostname
+    , Config::Username
+    , Config::Password
+    , Config::Database
+    );
+
+$todo = new Todo(
+      Config::Table_Prefix
+    , $dbh
+    );
+
+$todo->create();
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Config">
+											<h4 class="panel-title">
+												Config.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Config" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
@@ -87,10 +160,22 @@ class Config {
     const Table_Prefix = "EX_";
 }
 ?>
-</pre></p>
+</pre>
+										</div>
+									</div>
+								</div>
 
-		<p>Database.php
-		<pre>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Database">
+											<h4 class="panel-title">
+												Database.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Database" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
@@ -107,10 +192,22 @@ class Database {
     }
 }
 ?>
-</pre></p>
+</pre>
+										</div>
+									</div>
+								</div>
 
-		<p>Todo.php
-		<pre>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Todo">
+											<h4 class="panel-title">
+												Todo.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Todo" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
@@ -147,33 +244,17 @@ class Todo {
     }
 }
 ?>
-</pre></p>
-
-		<p>responder.php
-		<pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
-
-include 'Config.php';
-include 'Database.php';
-include 'Todo.php';
-
-$dbh = Database::initialize(
-      Config::Hostname
-    , Config::Username
-    , Config::Password
-    , Config::Database
-    );
-
-$todo = new Todo(
-      Config::Table_Prefix
-    , $dbh
-    );
-
-$todo->create();
-
-?>
 </pre>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 
 		<h3>Conclusion</h3>
 
