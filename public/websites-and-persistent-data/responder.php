@@ -19,9 +19,23 @@ $todo = new Todo(
     );
 
 try {
+	print "Create: ";
 	print $todo->create() . "\n";
 	print json_encode($todo->index()) . "\n";
-	print json_encode($todo->show(1)) . "\n";
+
+	print "Store: ";
+	print json_encode($todo->store("Task 1")) . "\n";
+	print json_encode($todo->index()) . "\n";
+	$record = $todo->show(1);
+	print json_encode($record) . "\n";
+
+	print "Update: ";
+	print json_encode($todo->update($record['todo_id'], "Task A")) . "\n";
+	print json_encode($todo->index()) . "\n";
+
+	print "DELETE: ";
+	print json_encode($todo->delete($record['todo_id'])) . "\n";
+	print json_encode($todo->index()) . "\n";
 }
 catch (\PDOException $e) {
     die("Error: " . $e->getMessage() . "\n");

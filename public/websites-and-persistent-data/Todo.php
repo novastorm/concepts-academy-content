@@ -44,7 +44,7 @@ class Todo {
     }
 
     public function show ($id) {
-        if (! is_integer($id)) {
+        if (! is_numeric($id)) {
             return false;
         }
 
@@ -60,7 +60,63 @@ class Todo {
         $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
         $sth->execute();
 
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        return $sth->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function store ($task) {
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
+
+        $query = "
+            INSERT INTO $table(task)
+            VALUES (:task)
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':task', $task, \PDO::PARAM_STR);
+        $sth->execute();
+
+        return true;
+    }
+
+    public function update ($id, $task) {
+        if (! is_numeric($id)) {
+            return false;
+        }
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
+
+        $query = "
+            UPDATE $table
+            SET task = :task
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth->bindParam(':task', $task, \PDO::PARAM_STR);
+        $sth->execute();
+
+        return true;
+    }
+
+    public function delete ($id) {
+        if (! is_numeric($id)) {
+            return false;
+        }
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
+
+        $query = "
+            DELETE FROM $table
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth->execute();
+
+        return true;
     }
 }
 ?>
