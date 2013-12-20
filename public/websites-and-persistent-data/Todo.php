@@ -3,6 +3,7 @@ namespace Websites_And_Persistent_Data;
 
 class Todo {
     private static $table_name = 'todo';
+    private static $primary_key = 'todo_id';
 
     private $table_prefix;
     private $dbh;
@@ -15,40 +16,51 @@ class Todo {
     public function create () {
         $table = $this->table_prefix . self::$table_name;
 
-        $sth = $this->dbh->prepare("
+        $query = "
             CREATE TABLE IF NOT EXISTS $table (
                   todo_id INTEGER PRIMARY KEY AUTO_INCREMENT
                 , task TEXT
                 , completed INTEGER DEFAULT 0
-            )");
+            )
+            ";
 
-        if (!$sth) {
-            die("Error: " . $this->dbh->error . "\n");
-        }
+        $sth = $this->dbh->prepare($query);
+        $sth->execute();
 
-        $ok = $sth->execute();
-
-        if (! $ok) {
-            die("Error: " . $this->dbh->error . "\n");
-        }
+        return true;
     }
 
     public function index () {
         $table = $this->table_prefix . self::$table_name;
 
-        $sth = $this->dbh->prepare("
-            SELECT * FROM $table;
-            ");
+        $query = "
+            SELECT * FROM $table
+            ";
 
-        if (!$sth) {
-            die("Error: " . $this->dbh->error . "\n");
+        $sth = $this->dbh->prepare($query);
+        $sth->execute();
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function show ($id) {
+        if (! is_integer($id)) {
+            return false;
         }
 
-        $ok = $sth->execute();
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
 
-        if (! $ok) {
-            die("Error: " . $this->dbh->error . "\n");
-        }
+        $query = "
+            SELECT * FROM $table
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth->execute();
+
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 ?>

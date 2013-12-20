@@ -6,7 +6,8 @@ include 'Database.php';
 include 'Todo.php';
 
 $dbh = Database::initialize(
-      Config::Hostname
+      Config::Database_Engine
+    , Config::Hostname
     , Config::Username
     , Config::Password
     , Config::Database
@@ -17,7 +18,13 @@ $todo = new Todo(
     , $dbh
     );
 
-$todo->create();
-print json_encode($todo->index());
+try {
+	print $todo->create() . "\n";
+	print json_encode($todo->index()) . "\n";
+	print json_encode($todo->show(1)) . "\n";
+}
+catch (\PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
 
 ?>
