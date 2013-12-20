@@ -254,7 +254,181 @@ class Todo {
 				</div>
 			</div>
 		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="SQL_Queries_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#SQL_Queries_Section" href="#SQL_Queries">
+							<h4 class="panel-title">
+									SQL Queries
+							</h4>
+						</a>
+					</div>
+					<div id="SQL_Queries" class="panel-collapse collapse">
+						<div class="panel-body">
+							<div class="panel-group" id="SQL_Queries_Command_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Show_Record_list">
+											<h4 class="panel-title">
+												Show Record List
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Show_Record_list" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
 
+class Database {
+    public static function initialize ($hostname, $username, $password, $database) {
+
+        $dbh = new \mysqli($hostname, $username, $password, $database);
+
+        if ($dbh->connect_error) {
+            die("Connection failed: " . mysqli_connect_error() . "\n");
+        }
+
+        return $dbh;
+    }
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Show_Record">
+											<h4 class="panel-title">
+												Show Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Show_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+class Database {
+    public static function initialize ($hostname, $username, $password, $database) {
+
+        $dbh = new \mysqli($hostname, $username, $password, $database);
+
+        if ($dbh->connect_error) {
+            die("Connection failed: " . mysqli_connect_error() . "\n");
+        }
+
+        return $dbh;
+    }
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Store_Record">
+											<h4 class="panel-title">
+												Store Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Store_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+class Database {
+    public static function initialize ($hostname, $username, $password, $database) {
+
+        $dbh = new \mysqli($hostname, $username, $password, $database);
+
+        if ($dbh->connect_error) {
+            die("Connection failed: " . mysqli_connect_error() . "\n");
+        }
+
+        return $dbh;
+    }
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Update_Record">
+											<h4 class="panel-title">
+												Update Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Update_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+class Database {
+    public static function initialize ($hostname, $username, $password, $database) {
+
+        $dbh = new \mysqli($hostname, $username, $password, $database);
+
+        if ($dbh->connect_error) {
+            die("Connection failed: " . mysqli_connect_error() . "\n");
+        }
+
+        return $dbh;
+    }
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Delete_Record">
+											<h4 class="panel-title">
+												Delete Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Delete_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+class Database {
+    public static function initialize ($hostname, $username, $password, $database) {
+
+        $dbh = new \mysqli($hostname, $username, $password, $database);
+
+        if ($dbh->connect_error) {
+            die("Connection failed: " . mysqli_connect_error() . "\n");
+        }
+
+        return $dbh;
+    }
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<h3>Conclusion</h3>
 

@@ -32,5 +32,23 @@ class Todo {
             die("Error: " . $this->dbh->error . "\n");
         }
     }
+
+    public function index () {
+        $table = $this->table_prefix . self::$table_name;
+
+        $sth = $this->dbh->prepare("
+            SELECT * FROM $table;
+            ");
+
+        if (!$sth) {
+            die("Error: " . $this->dbh->error . "\n");
+        }
+
+        $ok = $sth->execute();
+
+        if (! $ok) {
+            die("Error: " . $this->dbh->error . "\n");
+        }
+    }
 }
 ?>

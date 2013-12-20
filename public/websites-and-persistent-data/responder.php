@@ -18,5 +18,6 @@ $todo = new Todo(
     );
 
 $todo->create();
+print json_encode($todo->index());
 
 ?>

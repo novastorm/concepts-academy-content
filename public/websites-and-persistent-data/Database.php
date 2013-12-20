@@ -2,8 +2,8 @@
 namespace Websites_And_Persistent_Data;
 
 class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
-
+    public static function initialize ($hostname, $username, $password, $database)
+    {
         $dbh = new \mysqli($hostname, $username, $password, $database);
 
         if ($dbh->connect_error) {
