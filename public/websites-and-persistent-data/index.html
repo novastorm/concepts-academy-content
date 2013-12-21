@@ -105,13 +105,14 @@ Hello
 									</div>
 									<div id="SQL_Tables_Config" class="panel-collapse collapse">
 										<div class="panel-body">
-											<p>This file holds the site specific configuration for the program.</p>
-											<p>Create the file <strong>Config.php.example</strong> as follows:</p>
+											<p>This file contains the site specific configuration for the program.</p>
+											<p>Create the following <strong>Config.php.example</strong> file:</p>
 <pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
 class Config {
+    const Database_Engine = 'mysql';
     const Hostname = '';
     const Username = '';
     const Password = '';
@@ -136,17 +137,22 @@ class Config {
 									</div>
 									<div id="SQL_Tables_Database" class="panel-collapse collapse">
 										<div class="panel-body">
+											<p>This file contains database connection initialization program.</p>
+											<p>Create the following <strong>Database.php</strong> file:</p>
 <pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
 class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
-
-        $dbh = new \mysqli($hostname, $username, $password, $database);
-
-        if ($dbh->connect_error) {
-            die("Connection failed: " . mysqli_connect_error() . "\n");
+    public static function initialize ($engine, $hostname, $username, $password, $database)
+    {
+        $dsn = "$engine:host=$hostname;dbname=$database";
+        try {
+            $dbh = new \PDO($dsn, $username, $password);
+            $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        }
+        catch (\PDOException $e) {
+            die("Connection failed: " . $e->getMessage() . "\n");
         }
 
         return $dbh;
@@ -168,12 +174,15 @@ class Database {
 									</div>
 									<div id="SQL_Tables_Todo" class="panel-collapse collapse">
 										<div class="panel-body">
+											<p>This file contains the TODO object implementation.</p>
+											<p>Create the following <strong>Todo.php</strong> file:</p>
 <pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
 class Todo {
     private static $table_name = 'todo';
+    private static $primary_key = 'todo_id';
 
     private $table_prefix;
     private $dbh;
@@ -186,22 +195,18 @@ class Todo {
     public function create () {
         $table = $this->table_prefix . self::$table_name;
 
-        $sth = $this->dbh->prepare("
+        $query = "
             CREATE TABLE IF NOT EXISTS $table (
                   todo_id INTEGER PRIMARY KEY AUTO_INCREMENT
                 , task TEXT
                 , completed INTEGER DEFAULT 0
-            )");
+            )
+            ";
 
-        if (!$sth) {
-            die("Error: " . $this->dbh->error . "\n");
-        }
+        $sth = $this->dbh->prepare($query);
+        $sth->execute();
 
-        $ok = $sth->execute();
-
-        if (! $ok) {
-            die("Error: " . $this->dbh->error . "\n");
-        }
+        return true;
     }
 }
 ?>
@@ -229,7 +234,8 @@ include 'Database.php';
 include 'Todo.php';
 
 $dbh = Database::initialize(
-      Config::Hostname
+      Config::Database_Engine
+    , Config::Hostname
     , Config::Username
     , Config::Password
     , Config::Database
@@ -240,7 +246,13 @@ $todo = new Todo(
     , $dbh
     );
 
-$todo->create();
+try {
+    print "Create: ";
+    print $todo->create() . "\n";
+}
+catch (\PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
 ?>
 </pre>
 										</div>
@@ -436,25 +448,8 @@ $todo->create();
 									<div id="SQL_Queries_Responder" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
 
-include 'Config.php';
-include 'Database.php';
-include 'Todo.php';
-
-$dbh = Database::initialize(
-      Config::Database_Engine
-    , Config::Hostname
-    , Config::Username
-    , Config::Password
-    , Config::Database
-    );
-
-$todo = new Todo(
-      Config::Table_Prefix
-    , $dbh
-    );
+...
 
 try {
     print "Create: ";
@@ -479,11 +474,9 @@ try {
     print json_encode($todo->delete($record['todo_id'])) . "\n";
     print json_encode($todo->index()) . "\n";
 }
-catch (\PDOException $e) {
-    die("Error: " . $e->getMessage() . "\n");
-}
 
-?>
+...
+
 </pre>
 										</div>
 									</div>
