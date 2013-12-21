@@ -22,7 +22,7 @@
 			<li>CGI responder</li>
 			<li>SQL Tables</li>
 			<li>SQL Queries</li>
-			<li>SQL Injection prevention</li>
+			<li>SQL Injection Warning</li>
 		</ul>
 
 		<div class="row">
@@ -31,7 +31,7 @@
 					<div class="panel-heading">
 						<a data-toggle="collapse" data-parent="#Design_Specifications_Section" href="#Design_Specifications">
 							<h4 class="panel-title">
-									Design Specifications
+								Design Specifications
 							</h4>
 						</a>
 					</div>
@@ -272,29 +272,25 @@ class Todo {
 									<div class="panel-heading">
 										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Show_Record_list">
 											<h4 class="panel-title">
-												Show Record List
+												Show Record Index
 											</h4>
 										</a>
 									</div>
 									<div id="SQL_Queries_Show_Record_list" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
+    public function index () {
+        $table = $this->table_prefix . self::$table_name;
 
-class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
+        $query = "
+            SELECT * FROM $table
+            ";
 
-        $dbh = new \mysqli($hostname, $username, $password, $database);
+        $sth = $this->dbh->prepare($query);
+        $sth->execute();
 
-        if ($dbh->connect_error) {
-            die("Connection failed: " . mysqli_connect_error() . "\n");
-        }
-
-        return $dbh;
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
-}
-?>
 </pre>
 										</div>
 									</div>
@@ -310,22 +306,25 @@ class Database {
 									<div id="SQL_Queries_Show_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
-
-class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
-
-        $dbh = new \mysqli($hostname, $username, $password, $database);
-
-        if ($dbh->connect_error) {
-            die("Connection failed: " . mysqli_connect_error() . "\n");
+    public function show ($id) {
+        if (! is_numeric($id)) {
+            return false;
         }
 
-        return $dbh;
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
+
+        $query = "
+            SELECT * FROM $table
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth->execute();
+
+        return $sth->fetch(\PDO::FETCH_ASSOC);
     }
-}
-?>
 </pre>
 										</div>
 									</div>
@@ -341,22 +340,21 @@ class Database {
 									<div id="SQL_Queries_Store_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
+    public function store ($task) {
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
 
-class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
+        $query = "
+            INSERT INTO $table(task)
+            VALUES (:task)
+            ";
 
-        $dbh = new \mysqli($hostname, $username, $password, $database);
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':task', $task, \PDO::PARAM_STR);
+        $sth->execute();
 
-        if ($dbh->connect_error) {
-            die("Connection failed: " . mysqli_connect_error() . "\n");
-        }
-
-        return $dbh;
+        return true;
     }
-}
-?>
 </pre>
 										</div>
 									</div>
@@ -372,22 +370,26 @@ class Database {
 									<div id="SQL_Queries_Update_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
-
-class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
-
-        $dbh = new \mysqli($hostname, $username, $password, $database);
-
-        if ($dbh->connect_error) {
-            die("Connection failed: " . mysqli_connect_error() . "\n");
+    public function update ($id, $task) {
+        if (! is_numeric($id)) {
+            return false;
         }
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
 
-        return $dbh;
+        $query = "
+            UPDATE $table
+            SET task = :task
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth->bindParam(':task', $task, \PDO::PARAM_STR);
+        $sth->execute();
+
+        return true;
     }
-}
-?>
 </pre>
 										</div>
 									</div>
@@ -403,27 +405,60 @@ class Database {
 									<div id="SQL_Queries_Delete_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
-
-class Database {
-    public static function initialize ($hostname, $username, $password, $database) {
-
-        $dbh = new \mysqli($hostname, $username, $password, $database);
-
-        if ($dbh->connect_error) {
-            die("Connection failed: " . mysqli_connect_error() . "\n");
+    public function delete ($id) {
+        if (! is_numeric($id)) {
+            return false;
         }
+        $table = $this->table_prefix . self::$table_name;
+        $primary_key = self::$primary_key;
 
-        return $dbh;
+        $query = "
+            DELETE FROM $table
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth->execute();
+
+        return true;
     }
-}
-?>
 </pre>
 										</div>
 									</div>
 								</div>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="SQL_Injection_Warning_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#SQL_Injection_Warning_Section" href="#SQL_Injection_Warning">
+							<h4 class="panel-title">
+								SQL Injection Warning
+							</h4>
+						</a>
+					</div>
+					<div id="SQL_Injection_Warning" class="panel-collapse collapse">
+						<div class="panel-body">
+							<p>In data driven applications, <a href="http://en.wikipedia.org/wiki/SQL_injection">SQL injection</a> is an attack inserted into a form entry field intended for exection by the database server. When taking inputs from the user, the program must sanitize the input values to prevent this from occuring.</p>
+							<p>In the following code snippet, notice there is a placeholder where the query includes the todo_id value. After the query is prepared the program performs checks on the todo_id value then binds the intended value to the statement handler before executing the SQL query.</p>
+<p><pre>
+$query = "
+    SELECT * FROM $table
+    WHERE $primary_key = <b>:todo_id</b>
+    ";
+
+$sth = $this->dbh->prepare($query);
+$sth->bindParam('<b>:todo_id</b>', $id, \PDO::PARAM_INT);
+$sth->execute();
+</pre></p>
+							<p><span class="text-danger">Always assume that someone is going to maliciously attack your program.</span> Deny all access, allow only what is needed, and be sure to sanitize all input from outside the program.</p>
 						</div>
 					</div>
 				</div>
