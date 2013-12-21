@@ -9,21 +9,15 @@
 	<div class="container">
 		<div class="page-header">
 			<h1>Websites and Persistent Data</h1>
-			<p class="lead">This tutorial walks you through creating a website that utilizes persistent data. You will learn how to access an SQL database and manage data for your website.</p>
-			<ul>Prequisites
+			<p class="lead">This tutorial walks you through creating a website utilizing persistent data storage. You will learn how to access an SQL database and manage data for your website.</p>
+			<p>Prequisites</p>
+			<ul>
 				<li>HTML</li>
 				<li>Basic Object Oriented Programming.</li>
 				<li>Access to a MySQL Database</li>
 			</ul>
 			<p>* This tutorial intends to walk you through concepts and is designed to be langauge agnostic. Although this tutorial uses a specific language as the server side programming language, the concepts can be coded in any language.</p>
 		</div>
-		<ul>
-			<li>Design Specifications</li>
-			<li>CGI responder</li>
-			<li>SQL Tables</li>
-			<li>SQL Queries</li>
-			<li>SQL Injection Warning</li>
-		</ul>
 
 		<div class="row">
 			<div class="panel-group" id="Design_Specifications_Section">
@@ -103,64 +97,31 @@ Hello
 							<div class="panel-group" id="SQL_Tables_Files_Section">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Responder">
-											<h4 class="panel-title">
-												responder.php
-											</h4>
-										</a>
-									</div>
-									<div id="SQL_Tables_Responder" class="panel-collapse collapse">
-										<div class="panel-body">
-<pre>
-&lt;?php
-namespace Websites_And_Persistent_Data;
-
-include 'Config.php';
-include 'Database.php';
-include 'Todo.php';
-
-$dbh = Database::initialize(
-      Config::Hostname
-    , Config::Username
-    , Config::Password
-    , Config::Database
-    );
-
-$todo = new Todo(
-      Config::Table_Prefix
-    , $dbh
-    );
-
-$todo->create();
-?>
-</pre>
-										</div>
-									</div>
-								</div>
-
-								<div class="panel panel-default">
-									<div class="panel-heading">
 										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Config">
 											<h4 class="panel-title">
-												Config.php
+												Config.php.example
 											</h4>
 										</a>
 									</div>
 									<div id="SQL_Tables_Config" class="panel-collapse collapse">
 										<div class="panel-body">
+											<p>This file holds the site specific configuration for the program.</p>
+											<p>Create the file <strong>Config.php.example</strong> as follows:</p>
 <pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
 class Config {
-    const Hostname = 'localhost';
-    const Username = 'training';
-    const Password = 'training_password';
-    const Database = 'training';
+    const Hostname = '';
+    const Username = '';
+    const Password = '';
+    const Database = '';
     const Table_Prefix = "EX_";
 }
 ?>
 </pre>
+											<p>This file is named Config.php<strong><i>.example</i></strong> to provide an example configuration for the program. It is helpful when using version control systems to create examples for files containing private data. The example file can be checked into version control and a copy made for site specific implemention.</p>
+											<p>Copy this file to create a <strong>Config.php</strong> configured for your environment.</p>
 										</div>
 									</div>
 								</div>
@@ -243,6 +204,43 @@ class Todo {
         }
     }
 }
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+include 'Config.php';
+include 'Database.php';
+include 'Todo.php';
+
+$dbh = Database::initialize(
+      Config::Hostname
+    , Config::Username
+    , Config::Password
+    , Config::Database
+    );
+
+$todo = new Todo(
+      Config::Table_Prefix
+    , $dbh
+    );
+
+$todo->create();
 ?>
 </pre>
 										</div>
@@ -423,6 +421,69 @@ class Todo {
 
         return true;
     }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+include 'Config.php';
+include 'Database.php';
+include 'Todo.php';
+
+$dbh = Database::initialize(
+      Config::Database_Engine
+    , Config::Hostname
+    , Config::Username
+    , Config::Password
+    , Config::Database
+    );
+
+$todo = new Todo(
+      Config::Table_Prefix
+    , $dbh
+    );
+
+try {
+    print "Create: ";
+    print $todo->create() . "\n";
+
+    print "Index:\n";
+    print json_encode($todo->index()) . "\n";
+
+    print "Store: ";
+    print json_encode($todo->store("Task 1")) . "\n";
+    print json_encode($todo->index()) . "\n";
+
+    print "Show: ";
+    $record = $todo->show(1);
+    print json_encode($record) . "\n";
+
+    print "Update: ";
+    print json_encode($todo->update($record['todo_id'], "Task A")) . "\n";
+    print json_encode($todo->index()) . "\n";
+
+    print "DELETE: ";
+    print json_encode($todo->delete($record['todo_id'])) . "\n";
+    print json_encode($todo->index()) . "\n";
+}
+catch (\PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
+
+?>
 </pre>
 										</div>
 									</div>
