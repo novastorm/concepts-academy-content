@@ -211,6 +211,8 @@ class Todo {
 }
 ?>
 </pre>
+											<p>The Todo object currently contains only the constructor and the create methods. The contructor initializes a Todo instance. The create method creates the database table.</p>
+											<p>Subsequent Todo methods will be added to this file.</p>
 										</div>
 									</div>
 								</div>
@@ -225,6 +227,8 @@ class Todo {
 									</div>
 									<div id="SQL_Tables_Responder" class="panel-collapse collapse">
 										<div class="panel-body">
+											<p>This file contains the responder program to run tests.</p>
+											<p>Update the <strong>responder.php</strong> file:</p>
 <pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
@@ -255,6 +259,7 @@ catch (\PDOException $e) {
 }
 ?>
 </pre>
+											<p>This responder runs a preliminary tests of the program thus far. Run the program and check the database to ensure the todo table is created.</p>
 										</div>
 									</div>
 								</div>
