@@ -28,9 +28,10 @@ try {
     print "Store: ";
     print json_encode($todo->store("Task 1")) . "\n";
     print json_encode($todo->index()) . "\n";
+    $record_id = $todo->index()[0]['todo_id'];
 
     print "Show: ";
-    $record = $todo->show(1);
+    $record = $todo->show($record_id);
     print json_encode($record) . "\n";
 
     print "Update: ";

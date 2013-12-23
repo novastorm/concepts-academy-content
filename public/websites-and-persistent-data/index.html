@@ -174,7 +174,7 @@ class Database {
 									</div>
 									<div id="SQL_Tables_Todo" class="panel-collapse collapse">
 										<div class="panel-body">
-											<p>This file contains the TODO object implementation.</p>
+											<p>This file contains the Todo object implementation.</p>
 											<p>Create the following <strong>Todo.php</strong> file:</p>
 <pre>
 &lt;?php
@@ -259,11 +259,18 @@ catch (\PDOException $e) {
 }
 ?>
 </pre>
-											<p>This responder runs a preliminary tests of the program thus far. Run the program and check the database to ensure the todo table is created.</p>
+											<p>This responder runs a preliminary tests of the program thus far.</p>
 										</div>
 									</div>
 								</div>
 							</div>
+							<br>
+							<p>Run the responder.php program</p>
+							<p>Check the database to ensure the todo table is created.</p>
+<pre>
+mysql -u USERNAME -p -D DATABASE -e "show tables"
+mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
+</pre>
 						</div>
 					</div>
 				</div>
@@ -282,6 +289,7 @@ catch (\PDOException $e) {
 					</div>
 					<div id="SQL_Queries" class="panel-collapse collapse">
 						<div class="panel-body">
+							<p>The methods in this section are additional Todo object methods. Add these to the Todo class implementation.</p>
 							<div class="panel-group" id="SQL_Queries_Command_Section">
 								<div class="panel panel-default">
 									<div class="panel-heading">
@@ -452,6 +460,7 @@ catch (\PDOException $e) {
 									</div>
 									<div id="SQL_Queries_Responder" class="panel-collapse collapse">
 										<div class="panel-body">
+											Additional Todo object tests. Replace the try block in the responder with he following:
 <pre>
 
 ...
@@ -466,9 +475,10 @@ try {
     print "Store: ";
     print json_encode($todo->store("Task 1")) . "\n";
     print json_encode($todo->index()) . "\n";
+    $record_id = $todo->index()[0]['todo_id'];
 
     print "Show: ";
-    $record = $todo->show(1);
+    $record = $todo->show($record_id);
     print json_encode($record) . "\n";
 
     print "Update: ";
@@ -487,6 +497,8 @@ try {
 									</div>
 								</div>
 							</div>
+							<br>
+							<p>Run the responder.php program. If all went well, the responder shows the results</p>
 						</div>
 					</div>
 				</div>
