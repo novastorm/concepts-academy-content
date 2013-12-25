@@ -428,7 +428,7 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
 									<div id="SQL_Queries_Delete_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
-    public function delete ($id) {
+    public function destroy ($id) {
         if (! is_numeric($id)) {
             return false;
         }
@@ -485,8 +485,8 @@ try {
     print json_encode($todo->update($record['todo_id'], "Task A")) . "\n";
     print json_encode($todo->index()) . "\n";
 
-    print "DELETE: ";
-    print json_encode($todo->delete($record['todo_id'])) . "\n";
+    print "Destroy: ";
+    print json_encode($todo->destroy($record['todo_id'])) . "\n";
     print json_encode($todo->index()) . "\n";
 }
 
