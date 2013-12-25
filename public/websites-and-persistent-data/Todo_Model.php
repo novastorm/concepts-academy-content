@@ -1,7 +1,7 @@
 <?php
 namespace Websites_And_Persistent_Data;
 
-class Todo {
+class Todo_Model {
     private static $table_name = 'todo';
     private static $primary_key = 'todo_id';
 
@@ -11,23 +11,6 @@ class Todo {
     public function __construct ($prefix, $dbh) {
         $this->table_prefix = $prefix;
         $this->dbh = $dbh;
-    }
-
-    public function create () {
-        $table = $this->table_prefix . self::$table_name;
-
-        $query = "
-            CREATE TABLE IF NOT EXISTS $table (
-                  todo_id INTEGER PRIMARY KEY AUTO_INCREMENT
-                , task TEXT
-                , completed INTEGER DEFAULT 0
-            )
-            ";
-
-        $sth = $this->dbh->prepare($query);
-        $sth->execute();
-
-        return true;
     }
 
     public function index () {
@@ -100,7 +83,7 @@ class Todo {
         return true;
     }
 
-    public function delete ($id) {
+    public function destroy ($id) {
         if (! is_numeric($id)) {
             return false;
         }
