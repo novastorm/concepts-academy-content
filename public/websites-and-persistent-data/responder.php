@@ -7,6 +7,8 @@ require 'Create_Todo.php';
 require 'Todo_Model.php';
 require 'Todo_View.php';
 
+use PDOException;
+
 $dbh = Database::initialize(
       Config::Database_Engine
     , Config::Hostname
@@ -28,45 +30,41 @@ $todo_model = new Todo_Model(
 
 function create_tables ($tables)
 {
-    try {
-        foreach ($tables as $table) {
-            print "Create: ";
-            $table->create();
-        }
-    }
-    catch (\PDOException $e) {
-        die("Error: " . $e->getMessage() . "\n");
+    foreach ($tables as $table) {
+        print "Create: ";
+        $table->create();
     }
 }
 
 function test ($todo_model)
 {
-    try {
-        print "Index:\n";
-        print json_encode($todo_model->index()) . "\n";
+    print "Index:\n";
+    print json_encode($todo_model->index()) . "\n";
 
-        print "Store: ";
-        print json_encode($todo_model->store("Task 1")) . "\n";
-        print json_encode($todo_model->index()) . "\n";
-        $record_id = $todo_model->index()[0]['todo_id'];
+    print "Store: ";
+    print json_encode($todo_model->store("Task 1")) . "\n";
+    print json_encode($todo_model->index()) . "\n";
+    $record_id = $todo_model->index()[0]['todo_id'];
 
-        print "Show: ";
-        $record = $todo_model->show($record_id);
-        print json_encode($record) . "\n";
+    print "Show: ";
+    $record = $todo_model->show($record_id);
+    print json_encode($record) . "\n";
 
-        print "Update: ";
-        print json_encode($todo_model->update($record['todo_id'], "Task A")) . "\n";
-        print json_encode($todo_model->index()) . "\n";
+    print "Update: ";
+    print json_encode($todo_model->update($record['todo_id'], "Task A")) . "\n";
+    print json_encode($todo_model->index()) . "\n";
 
-        print "Destroy: ";
-        print json_encode($todo_model->destroy($record['todo_id'])) . "\n";
-        print json_encode($todo_model->index()) . "\n";
-    }
-    catch (\PDOException $e) {
-        die("Error: " . $e->getMessage() . "\n");
-    }
+    print "Destroy: ";
+    print json_encode($todo_model->destroy($record['todo_id'])) . "\n";
+    print json_encode($todo_model->index()) . "\n";
 }
 
-create_tables([$todo_table]);
-test ($todo_model);
+try {
+    create_tables([$todo_table]);
+    test ($todo_model);
+}
+catch (PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
+
 ?>

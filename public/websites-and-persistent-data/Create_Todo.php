@@ -2,19 +2,23 @@
 namespace Websites_And_Persistent_Data;
 
 class Create_Todo {
-    private static $table_name = 'todo';
-    private static $primary_key = 'todo_id';
+    private static $_table_name = 'todo';
+    private static $_primary_key = 'todo_id';
 
-    private $table_prefix;
-    private $dbh;
+    private $_table_prefix;
+    private $_dbh;
 
     public function __construct ($prefix, $dbh) {
-        $this->table_prefix = $prefix;
-        $this->dbh = $dbh;
+        $this->_table_prefix = $prefix;
+        $this->_dbh = $dbh;
+    }
+
+    protected function table () {
+        return $this->_table_prefix . self::$_table_name;
     }
 
     public function create () {
-        $table = $this->table_prefix . self::$table_name;
+        $table = $this->table();
 
         $query = "
             CREATE TABLE IF NOT EXISTS $table (
@@ -24,7 +28,7 @@ class Create_Todo {
             )
             ";
 
-        $sth = $this->dbh->prepare($query);
+        $sth = $this->_dbh->prepare($query);
         $sth->execute();
 
         return true;
