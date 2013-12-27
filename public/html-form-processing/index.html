@@ -37,7 +37,7 @@ php responder.php
 </pre>
 		<p>Remotely test program using cURL</p>
 		<pre>
-curl -k <b>"http://__URL__/response.php"</b>
+curl -k <b>"http://__URL__/responder.php"</b>
 </pre>
 		<p>The server should respond to both with the following:</p>
 		<pre>
@@ -53,21 +53,21 @@ Hello
 </pre>
 		<p>Show the results of an HTTP GET request. On a *nix server command line enter:</p>
 		<pre>
-curl -k <b>"http://__URL__/response.php?key_1=value_1&key_2=value_2"</b>
+curl -k <b>"http://__URL__/responder.php?key_1=value_1&key_2=value_2"</b>
 </pre>
 		<p>Show the results of an HTTP POST request. On a *nix server command line enter:</p>
 		<pre>
-curl -k <b>"http://__URL__/response.php" -X POST -d "key_1=value_1&key_2=value_2"</b>
+curl -k <b>"http://__URL__/responder.php" -X POST -d "key_1=value_1&key_2=value_2"</b>
 </pre>
 		<p>Show the results using a web browser. Enter the URL into the web browser:</p>
 		<pre>
-<b>http://__URL__/response.php" -X POST -d "key_1=value_1&key_2=value_2</b>
+<b>http://__URL__/responder.php?key_1=value_1&key_2=value_2</b>
 </pre>
 		<p>The server should respond with the following:</p>
 		<pre>
 Array
 </pre>
-		<p>As appropriate a response as this is, let's see what the contents of the array are.</p>
+		<p>As appropriate a responder as this is, let's see what the contents of the array are.</p>
 		<p>Update the program to print the contents of the request inputs.</p>
 		<pre>
 &lt;?php
@@ -80,7 +80,7 @@ Array
 {"key_1":"value_1","key_2":"value_2"}
 </pre>
 
-		<p>Since the request is an data structure we can also access the keys individually.</p>
+		<p>Since the request is a data structure we can also access the keys individually.</p>
 		<pre>
 &lt;?php
     print $_REQUEST['key_1'];
@@ -93,7 +93,7 @@ value_1
 		<h4>Exercises</h4>
 		<ul>
 			<li>Create a program that returns the value of 'key_2'.</li>
-			<li>Create a lirogram that returns the values of your own custom keys and values.</li>
+			<li>Create a program that returns the values of your own custom keys and values.</li>
 		</ul>
 
 		<h3>HTML form submission</h3>
@@ -138,7 +138,7 @@ value_1
 
 		<h4>Exercises</h4>
 		<ul>
-			<li>Experiment with printing various inputs and responses.</li>
+			<li>Experiment with printing various inputs and responders.</li>
 		</ul>
 
 
@@ -177,17 +177,17 @@ value_1
 
 		<p>Remotely test program using cURL</p>
 		<pre>
-curl -k <b>"http://__URL__/response.php"</b>
+curl -k <b>"http://__URL__/responder.php"</b>
 </pre>
 
 		<h4>Exercises</h4>
 		<ul>
-			<li>Experiment with printing various HTML inputs and responses.</li>
+			<li>Experiment with printing various HTML inputs and responders.</li>
 		</ul>
 
 		<h3>Conclusion</h3>
 		<p>That wraps up the HTML form processing tutorial.</p>
-		<p>You have created a program that responds to web form input and dynamically generates a response. Additionally, you have integrated the initial page display into the responder and thus, created a single URL access point to your site.</p>
+		<p>You have created a program that responds to web form input and dynamically generates a responder. Additionally, you have integrated the initial page display into the responder and thus, created a single URL access point to your site.</p>
 		<p>There are more advanced techniques which involve completely separating the user interface from the server data and logic. These will be covered in subsequent tutorials. For now, experiment with your own basic form processor.<p>
 		<p>Have fun generating your own dynamic web forms!</p>
 
