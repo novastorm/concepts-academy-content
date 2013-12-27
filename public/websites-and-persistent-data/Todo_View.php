@@ -59,9 +59,9 @@ EOF;
 		return $output;
 	}
 
-	public function edit ()
+	public function edit ($id)
 	{
-		$output = "Edit View";
+		$output = "$id: Edit View";
 		return $output;
 	}
 }
