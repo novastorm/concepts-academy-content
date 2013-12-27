@@ -65,6 +65,9 @@ function layout_view ($body)
     $output = <<<EOF
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <base href="https://192.168.33.10/content/websites-and-persistent-data/">
+</head>
 <body>
 $body
 </body>

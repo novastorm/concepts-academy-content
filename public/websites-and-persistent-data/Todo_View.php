@@ -50,7 +50,7 @@ class Todo_View {
 	{
 		$output = "Create View";
 		$output = <<< EOF
-<form action="response.php/todo/store">
+<form action="responder.php/todo/store">
 	<label for="input-task">Task</label>
 	<input type="text" name="input-task" placeholder="Task">
 	<button type="submit">Add Task</button>
