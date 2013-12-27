@@ -143,17 +143,15 @@ class Config {
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
+use PDO;
+
 class Database {
     public static function initialize ($engine, $hostname, $username, $password, $database)
     {
         $dsn = "$engine:host=$hostname;dbname=$database";
-        try {
-            $dbh = new \PDO($dsn, $username, $password);
-            $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        }
-        catch (\PDOException $e) {
-            die("Connection failed: " . $e->getMessage() . "\n");
-        }
+
+        $dbh = new PDO($dsn, $username, $password);
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $dbh;
     }
@@ -166,34 +164,38 @@ class Database {
 
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Todo">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Create_Todo">
 											<h4 class="panel-title">
-												Todo.php
+												Create_Todo.php
 											</h4>
 										</a>
 									</div>
-									<div id="SQL_Tables_Todo" class="panel-collapse collapse">
+									<div id="SQL_Tables_Create_Todo" class="panel-collapse collapse">
 										<div class="panel-body">
-											<p>This file contains the Todo object implementation.</p>
-											<p>Create the following <strong>Todo.php</strong> file:</p>
+											<p>This file contains the Create_Todo object implementation.</p>
+											<p>Create the following <strong>Create_Todo.php</strong> file:</p>
 <pre>
 &lt;?php
 namespace Websites_And_Persistent_Data;
 
-class Todo {
-    private static $table_name = 'todo';
-    private static $primary_key = 'todo_id';
+class Create_Todo {
+    private static $_table_name = 'todo';
+    private static $_primary_key = 'todo_id';
 
-    private $table_prefix;
-    private $dbh;
+    private $_table_prefix;
+    private $_dbh;
 
     public function __construct ($prefix, $dbh) {
-        $this->table_prefix = $prefix;
-        $this->dbh = $dbh;
+        $this->_table_prefix = $prefix;
+        $this->_dbh = $dbh;
+    }
+
+    protected function table () {
+        return $this->_table_prefix . self::$_table_name;
     }
 
     public function create () {
-        $table = $this->table_prefix . self::$table_name;
+        $table = $this->table();
 
         $query = "
             CREATE TABLE IF NOT EXISTS $table (
@@ -203,7 +205,7 @@ class Todo {
             )
             ";
 
-        $sth = $this->dbh->prepare($query);
+        $sth = $this->_dbh->prepare($query);
         $sth->execute();
 
         return true;
@@ -211,8 +213,7 @@ class Todo {
 }
 ?>
 </pre>
-											<p>The Todo object currently contains only the constructor and the create methods. The contructor initializes a Todo instance. The create method creates the database table.</p>
-											<p>Subsequent Todo methods will be added to this file.</p>
+											<p>The Create_Todo object creates the todo database table.</p>
 										</div>
 									</div>
 								</div>
@@ -235,7 +236,9 @@ namespace Websites_And_Persistent_Data;
 
 require 'Config.php';
 require 'Database.php';
-require 'Todo.php';
+require 'Create_Todo.php';
+
+use PDOException;
 
 $dbh = Database::initialize(
       Config::Database_Engine
@@ -245,16 +248,32 @@ $dbh = Database::initialize(
     , Config::Database
     );
 
-$todo = new Todo(
+$todo_table = new Create_Todo(
       Config::Table_Prefix
     , $dbh
     );
 
-try {
-    print "Create: ";
-    print $todo->create() . "\n";
+// TODO: Create todo model instance
+// TODO: Create todo view instance
+
+function create_tables ($tables)
+{
+    foreach ($tables as $table) {
+        $table->create();
+    }
 }
-catch (\PDOException $e) {
+
+// TODO: Todo model tests
+// TODO: Create layout view
+// TODO: Process routes
+
+try {
+    print "Create Tables\n";
+    create_tables([$todo_table]);
+    // TODO: run todo model tests
+    // TODO: run application routes
+}
+catch (PDOException $e) {
     die("Error: " . $e->getMessage() . "\n");
 }
 ?>
@@ -289,8 +308,47 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
 					</div>
 					<div id="SQL_Queries" class="panel-collapse collapse">
 						<div class="panel-body">
-							<p>The methods in this section are additional Todo object methods. Add these to the Todo class implementation.</p>
+							<p>Setup the Todo_Model object methods.</p>
+							<p>Create the following <strong>Todo_Model.php</strong> file:</p>
 							<div class="panel-group" id="SQL_Queries_Command_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Todo_Model_Setup">
+											<h4 class="panel-title">
+												Todo_Model setup
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Todo_Model_Setup" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+use PDO;
+
+class Todo_Model {
+    private static $_table_name = 'todo';
+    private static $_primary_key = 'todo_id';
+
+    private $_table_prefix;
+    private $_dbh;
+
+    public function __construct ($prefix, $dbh) {
+        $this->_table_prefix = $prefix;
+        $this->_dbh = $dbh;
+    }
+
+    protected function table () {
+        return $this->_table_prefix . self::$_table_name;
+    }
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<br>
+								<p>The methods in this section are additional Todo_Model object methods. Add these to the Todo_model implementation.</p>
 								<div class="panel panel-default">
 									<div class="panel-heading">
 										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Show_Record_list">
@@ -303,16 +361,16 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
 										<div class="panel-body">
 <pre>
     public function index () {
-        $table = $this->table_prefix . self::$table_name;
+        $table = $this->table();
 
         $query = "
             SELECT * FROM $table
             ";
 
-        $sth = $this->dbh->prepare($query);
+        $sth = $this->_dbh->prepare($query);
         $sth->execute();
 
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 </pre>
 										</div>
@@ -334,19 +392,19 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
             return false;
         }
 
-        $table = $this->table_prefix . self::$table_name;
-        $primary_key = self::$primary_key;
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
 
         $query = "
             SELECT * FROM $table
             WHERE $primary_key = :todo_id
             ";
 
-        $sth = $this->dbh->prepare($query);
-        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, PDO::PARAM_INT);
         $sth->execute();
 
-        return $sth->fetch(\PDO::FETCH_ASSOC);
+        return $sth->fetch(PDO::FETCH_ASSOC);
     }
 </pre>
 										</div>
@@ -364,16 +422,16 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
 										<div class="panel-body">
 <pre>
     public function store ($task) {
-        $table = $this->table_prefix . self::$table_name;
-        $primary_key = self::$primary_key;
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
 
         $query = "
             INSERT INTO $table(task)
             VALUES (:task)
             ";
 
-        $sth = $this->dbh->prepare($query);
-        $sth->bindParam(':task', $task, \PDO::PARAM_STR);
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':task', $task, PDO::PARAM_STR);
         $sth->execute();
 
         return true;
@@ -397,8 +455,8 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
         if (! is_numeric($id)) {
             return false;
         }
-        $table = $this->table_prefix . self::$table_name;
-        $primary_key = self::$primary_key;
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
 
         $query = "
             UPDATE $table
@@ -406,14 +464,13 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
             WHERE $primary_key = :todo_id
             ";
 
-        $sth = $this->dbh->prepare($query);
-        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
-        $sth->bindParam(':task', $task, \PDO::PARAM_STR);
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, PDO::PARAM_INT);
+        $sth->bindParam(':task', $task, PDO::PARAM_STR);
         $sth->execute();
 
         return true;
-    }
-</pre>
+    }</pre>
 										</div>
 									</div>
 								</div>
@@ -432,16 +489,16 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
         if (! is_numeric($id)) {
             return false;
         }
-        $table = $this->table_prefix . self::$table_name;
-        $primary_key = self::$primary_key;
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
 
         $query = "
             DELETE FROM $table
             WHERE $primary_key = :todo_id
             ";
 
-        $sth = $this->dbh->prepare($query);
-        $sth->bindParam(':todo_id', $id, \PDO::PARAM_INT);
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, PDO::PARAM_INT);
         $sth->execute();
 
         return true;
@@ -460,38 +517,56 @@ mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
 									</div>
 									<div id="SQL_Queries_Responder" class="panel-collapse collapse">
 										<div class="panel-body">
-											Additional Todo object tests. Replace the try block in the responder with he following:
+											<p>Add the todo model and test functions:</p>
 <pre>
 
 ...
 
-try {
-    print "Create: ";
-    print $todo->create() . "\n";
+// TODO: Create todo model instance
+$todo_model = new Todo_Model(
+      Config::Table_Prefix
+    , $dbh
+    );
 
+...
+
+// TODO: Todo model tests
+function test ($todo_model)
+{
     print "Index:\n";
-    print json_encode($todo->index()) . "\n";
+    print json_encode($todo_model->index()) . "\n";
 
     print "Store: ";
-    print json_encode($todo->store("Task 1")) . "\n";
-    print json_encode($todo->index()) . "\n";
-    $record_id = $todo->index()[0]['todo_id'];
+    print json_encode($todo_model->store("Task 1")) . "\n";
+    print json_encode($todo_model->index()) . "\n";
+    $record_id = $todo_model->index()[0]['todo_id'];
 
     print "Show: ";
-    $record = $todo->show($record_id);
+    $record = $todo_model->show($record_id);
     print json_encode($record) . "\n";
 
     print "Update: ";
-    print json_encode($todo->update($record['todo_id'], "Task A")) . "\n";
-    print json_encode($todo->index()) . "\n";
+    print json_encode($todo_model->update($record['todo_id'], "Task A")) . "\n";
+    print json_encode($todo_model->index()) . "\n";
 
     print "Destroy: ";
-    print json_encode($todo->destroy($record['todo_id'])) . "\n";
-    print json_encode($todo->index()) . "\n";
+    print json_encode($todo_model->destroy($record['todo_id'])) . "\n";
+    print json_encode($todo_model->index()) . "\n";
 }
 
 ...
 
+</pre>
+											<p>Additional Todo object tests. Replace the try block in the responder with he following:</p>
+<pre>
+try {
+	...
+
+    // TODO: run todo model tests
+    test ($todo_model);
+
+    ...
+}
 </pre>
 										</div>
 									</div>
