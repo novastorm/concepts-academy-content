@@ -83,12 +83,12 @@ function process_route ($todo_view)
         $result = $todo_view->show($todo_id);
     }
     else if (preg_match('|^/todo/store$|', $route)) {
-        $task = $_REQUEST['task'];
+        $task = $_REQUEST['input-task'];
         $result = $todo_view->store(['task' => $task]);
     }
     else if (preg_match('|^/todo/update/(\d+)$|', $route, $matches)) {
         $todo_id = $matches[1];
-        $task = $_REQUEST['task'];
+        $task = $_REQUEST['input-task'];
         $result = $todo_view->update($todo_id, ['task' => $task]);
     }
     else if (preg_match('|^/todo/destroy/(\d+)$|', $route, $matches)) {

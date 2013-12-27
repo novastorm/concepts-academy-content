@@ -49,6 +49,13 @@ class Todo_View {
 	public function create ()
 	{
 		$output = "Create View";
+		$output = <<< EOF
+<form action="response.php/todo/store">
+	<label for="input-task">Task</label>
+	<input type="text" name="input-task" placeholder="Task">
+	<button type="submit">Add Task</button>
+</form>
+EOF;
 		return $output;
 	}
 
