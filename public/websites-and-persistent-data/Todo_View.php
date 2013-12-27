@@ -45,6 +45,18 @@ class Todo_View {
 		$output = json_encode($record);
 		return $output;
 	}
+
+	public function create ()
+	{
+		$output = "Create View";
+		return $output;
+	}
+
+	public function edit ()
+	{
+		$output = "Edit View";
+		return $output;
+	}
 }
 
 ?>

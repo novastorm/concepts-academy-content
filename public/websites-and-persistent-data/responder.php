@@ -95,6 +95,12 @@ function process_route ($todo_view)
         $todo_id = $matches[1];
         $result = $todo_view->destroy($todo_id);
     }
+    else if (preg_match('|^/todo/create$|', $route)) {
+        $result = $todo_view->create();
+    }
+    else if (preg_match('|^/todo/edit$|', $route)) {
+        $result = $todo_view->edit();
+    }
     // else if (preg_match('^/todo$', $route) {
     else {
         $result = $todo_view->index();
