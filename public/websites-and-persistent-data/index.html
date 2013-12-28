@@ -20,25 +20,6 @@
 		</div>
 
 		<div class="row">
-			<div class="panel-group" id="Design_Specifications_Section">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<a data-toggle="collapse" data-parent="#Design_Specifications_Section" href="#Design_Specifications">
-							<h4 class="panel-title">
-								Design Specifications
-							</h4>
-						</a>
-					</div>
-					<div id="Design_Specifications" class="panel-collapse collapse">
-						<div class="panel-body">
-							TODO: Add Design Specifications diagram.
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<br>
-		<div class="row">
 			<div class="panel-group" id="CGI_Responder_Section">
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -71,6 +52,59 @@ curl -k <b>"http://__URL__/response.php"</b>
 <p>The server should respond to both with the following:</p>
 <pre>
 Hello
+</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="Design_Specifications_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#Design_Specifications_Section" href="#Design_Specifications">
+							<h4 class="panel-title">
+								Design Specifications
+							</h4>
+						</a>
+					</div>
+					<div id="Design_Specifications" class="panel-collapse collapse">
+						<div class="panel-body">
+											<p>Update the <strong>responder.php</strong> file:</p>
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+// TODO: require Configuration implementation;
+// TODO: require Database Connection implementation;
+// TODO: require Create Todo table implementation;
+// TODO: require Todo Model implementation;
+// TODO: require Todo View implementation;
+
+// TODO: create database handler
+
+// TODO: Create Todo table
+
+// TODO: Create todo model instance
+// TODO: Create todo view instance
+
+// TODO: Create Database tables
+
+// TODO: Todo model tests
+// TODO: Create layout view
+// TODO: Process routes
+
+// run application
+try {
+	// TODO: Create Tables;
+    // TODO: run todo model tests
+    // TODO: run application routes
+}
+catch (PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
+?>
 </pre>
 						</div>
 					</div>
@@ -1002,6 +1036,11 @@ try {
 										</div>
 									</div>
 								</div>
+								<br>
+								<p>Run the program using a web browser. Enter the URL into the web browser:</p>
+<pre>
+<b>http://__URL__/responder.php</b>
+</pre>
 							</div>
 						</div>
 					</div>
