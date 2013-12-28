@@ -19,6 +19,7 @@ class Todo_Model {
         return $this->_table_prefix . self::$_table_name;
     }
 
+    // TODO: Todo index
     public function index () {
         $table = $this->table();
 
@@ -31,7 +32,7 @@ class Todo_Model {
 
         return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    // TODO: Todo show
     public function show ($id) {
         if (! is_numeric($id)) {
             return false;
@@ -51,7 +52,7 @@ class Todo_Model {
 
         return $sth->fetch(PDO::FETCH_ASSOC);
     }
-
+    // TODO: Todo store
     public function store ($task) {
         $table = $this->table();
         $primary_key = self::$_primary_key;
@@ -67,7 +68,8 @@ class Todo_Model {
 
         return true;
     }
-
+    // TODO: Todo update
+    // TODO: Todo update
     public function update ($id, $task) {
         if (! is_numeric($id)) {
             return false;
@@ -88,7 +90,7 @@ class Todo_Model {
 
         return true;
     }
-
+    // TODO: Todo destroy
     public function destroy ($id) {
         if (! is_numeric($id)) {
             return false;

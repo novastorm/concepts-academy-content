@@ -4,7 +4,11 @@ namespace Websites_And_Persistent_Data;
 require 'Config.php';
 require 'Database.php';
 require 'Create_Todo.php';
+// require Todo Model implementation;
+require 'Todo_Model.php';
+// require Todo View implementation;
 require 'Todo_View.php';
+
 
 use PDOException;
 
@@ -21,22 +25,22 @@ $todo_table = new Create_Todo(
     , $dbh
     );
 
-
+// TODO: Create todo model instance
 $todo_model = new Todo_Model(
       Config::Table_Prefix
     , $dbh
     );
-
+// TODO: Create todo view instance
 $todo_view = new Todo_View($todo_model);
 
 function create_tables ($tables)
 {
     foreach ($tables as $table) {
-        // print "Create: ";
         $table->create();
     }
 }
 
+// TODO: Todo model tests
 function test ($todo_model)
 {
     print "Index:\n";
@@ -59,7 +63,7 @@ function test ($todo_model)
     print json_encode($todo_model->destroy($record['todo_id'])) . "\n";
     print json_encode($todo_model->index()) . "\n";
 }
-
+// TODO: Create layout view
 function layout_view ($body)
 {
     $output = <<<EOF
@@ -75,7 +79,7 @@ $body
 EOF;
     return $output;
 }
-
+// TODO: Process routes
 function process_route ($todo_view)
 {
     $route = $_SERVER['PATH_INFO'];
@@ -117,12 +121,14 @@ function process_route ($todo_view)
 }
 
 try {
+    // print "Create Tables\n";
     create_tables([$todo_table]);
+    // TODO: run todo model tests
     // test ($todo_model);
+    // TODO: run application routes
     print process_route($todo_view);
 }
 catch (PDOException $e) {
     die("Error: " . $e->getMessage() . "\n");
 }
-
 ?>

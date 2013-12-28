@@ -237,6 +237,8 @@ namespace Websites_And_Persistent_Data;
 require 'Config.php';
 require 'Database.php';
 require 'Create_Todo.php';
+// require Todo Model implementation;
+// require Todo View implementation;
 
 use PDOException;
 
@@ -342,6 +344,14 @@ class Todo_Model {
     protected function table () {
         return $this->_table_prefix . self::$_table_name;
     }
+
+    // TODO: Todo index
+    // TODO: Todo show
+    // TODO: Todo store
+    // TODO: Todo update
+    // TODO: Todo destroy
+
+}
 ?>
 </pre>
 										</div>
@@ -360,6 +370,7 @@ class Todo_Model {
 									<div id="SQL_Queries_Show_Record_list" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
+    // TODO: Todo index
     public function index () {
         $table = $this->table();
 
@@ -387,6 +398,7 @@ class Todo_Model {
 									<div id="SQL_Queries_Show_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
+    // TODO: Todo show
     public function show ($id) {
         if (! is_numeric($id)) {
             return false;
@@ -421,6 +433,7 @@ class Todo_Model {
 									<div id="SQL_Queries_Store_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
+    // TODO: Todo store
     public function store ($task) {
         $table = $this->table();
         $primary_key = self::$_primary_key;
@@ -451,6 +464,7 @@ class Todo_Model {
 									<div id="SQL_Queries_Update_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
+    // TODO: Todo update
     public function update ($id, $task) {
         if (! is_numeric($id)) {
             return false;
@@ -470,21 +484,23 @@ class Todo_Model {
         $sth->execute();
 
         return true;
-    }</pre>
+    }
+</pre>
 										</div>
 									</div>
 								</div>
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Delete_Record">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Destroy_Record">
 											<h4 class="panel-title">
-												Delete Record
+												Destroy Record
 											</h4>
 										</a>
 									</div>
-									<div id="SQL_Queries_Delete_Record" class="panel-collapse collapse">
+									<div id="SQL_Queries_Destroy_Record" class="panel-collapse collapse">
 										<div class="panel-body">
 <pre>
+    // TODO: Todo destroy
     public function destroy ($id) {
         if (! is_numeric($id)) {
             return false;
@@ -519,6 +535,11 @@ class Todo_Model {
 										<div class="panel-body">
 											<p>Add the todo model and test functions:</p>
 <pre>
+...
+
+// require Todo Model implementation;
+require 'Todo_Model.php';
+
 
 ...
 
@@ -605,6 +626,383 @@ $sth->bindParam('<b>:todo_id</b>', $id, \PDO::PARAM_INT);
 $sth->execute();
 </pre></p>
 							<p><span class="text-danger">Always assume that someone is going to maliciously attack your program.</span> Deny all access, allow only what is needed, and be sure to sanitize all input from outside the program.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="Application_View_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#Application_View_Section" href="#Application_View">
+							<h4 class="panel-title">
+								Application View
+							</h4>
+						</a>
+					</div>
+					<div id="Application_View" class="panel-collapse collapse">
+						<div class="panel-body">
+							<p>Setup the Todo_View object methods.</p>
+							<p>Create the following <strong>Todo_View.php</strong> file:</p>
+							<div class="panel-group" id="Application_View_Command_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Todo_View_Setup">
+											<h4 class="panel-title">
+												Todo_View setup
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Todo_View_Setup" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+require 'Todo_Model.php';
+
+class Todo_View {
+    private $_model;
+
+    public function __construct ($model)
+    {
+        $this->_model = $model;
+    }
+
+    // TODO: Todo view index
+    // TODO: Todo view show
+    // TODO: Todo view store
+    // TODO: Todo view update
+    // TODO: Todo view destroy
+    // TODO: Todo view create
+    // TODO: Todo view edit
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<br>
+								<p>The methods in this section are additional Todo_View object methods. Add these to the Todo_View implementation.</p>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Show_Record_list">
+											<h4 class="panel-title">
+												Show Record Index
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Show_Record_list" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view index
+    public function index ()
+    {
+        $record_list = $this->_model->index();
+        // $output = json_encode($record_list);
+        $output = "";
+        $output .= &lt;&lt;&lt;EOF
+&lt;h2>Todo List &lt;a href="responder.php/todo/create">&lt;button>New&lt;/button>&lt;/a>&lt;/h2>
+EOF;
+        $output .= "&lt;table>\n";
+
+        foreach ($record_list as $record) {
+            $todo_id = $record['todo_id'];
+            $task = $record['task'];
+
+            $output .= &lt;&lt;&lt;EOF
+&lt;tr>
+    &lt;td>&lt;a href="responder.php/todo/show/$todo_id">$task&lt;/a>&lt;/td>
+    &lt;td>&lt;a href="responder.php/todo/show/$todo_id/edit">edit&lt;/a>&lt;/td>
+    &lt;td>&lt;a href="responder.php/todo/destroy/$todo_id">destroy&lt;/a>&lt;/td>
+&lt;/tr>
+EOF;
+        }
+
+        $output .= "\n&lt;/table>\n";
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Show_Record">
+											<h4 class="panel-title">
+												Show Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Show_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view show
+    public function show ($id)
+    {
+        $record = $this->_model->show($id);
+
+        $todo_id = $record['todo_id'];
+        $task = $record['task'];
+
+        $output = &lt;&lt;&lt;EOF
+&lt;dl>
+    &lt;dt>ID:&lt;/dt>
+    &lt;dd>$todo_id&lt;/dd>
+    &lt;dt>Task:&lt;/dt>
+    &lt;dd>$task&lt;/dd>
+&lt;/dl>
+EOF;
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Store_Record">
+											<h4 class="panel-title">
+												Store Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Store_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view store
+    public function store ($param)
+    {
+        return $this->_model->store($param['task']);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Update_Record">
+											<h4 class="panel-title">
+												Update Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Update_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view update
+    public function update ($id, $param)
+    {
+        return $this->_model->update($id, $param['task']);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Destroy_Record">
+											<h4 class="panel-title">
+												Destroy Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Destroy_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view destroy
+    public function destroy ($id)
+    {
+        return $this->_model->destroy($id);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Create_Record">
+											<h4 class="panel-title">
+												Create Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Create_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view create
+    public function create ()
+    {
+        $output = <<< EOF
+&lt;form action="responder.php/todo/store">
+    &lt;label for="input-task">Task&lt;/label>
+    &lt;input type="text" name="input-task" placeholder="Task">
+    &lt;button type="submit">Add Task&lt;/button>
+&lt;/form>
+EOF;
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Edit_Record">
+											<h4 class="panel-title">
+												Edit Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Edit_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view edit
+    public function edit ($id)
+    {
+        $record = $this->_model->show($id);
+
+        $todo_id = $record['todo_id'];
+        $task = $record['task'];
+
+        $output = <<< EOF
+&lt;form action="responder.php/todo/update/$todo_id">
+    &lt;label for="input-task">Task&lt;/label>
+    &lt;input type="text" name="input-task" value="$task" placeholder="Task">
+    &lt;button type="submit">Update Task&lt;/button>
+&lt;/form>
+EOF;
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>Add the todo view and route functions:</p>
+<pre>
+...
+
+// require Todo View implementation;
+require 'Todo_View.php';
+
+...
+
+// TODO: Create todo view instance
+$todo_view = new Todo_View($todo_model);
+
+...
+
+// TODO: Create layout view
+function layout_view ($body)
+{
+    $output = &lt;&lt;&lt;EOF
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+    &lt;base href="https://192.168.33.10/content/websites-and-persistent-data/">
+&lt;/head>
+&lt;body>
+$body
+&lt;/body>
+&lt;/html>
+EOF;
+    return $output;
+}
+
+...
+
+// TODO: Process routes
+function process_route ($todo_view)
+{
+    $route = $_SERVER['PATH_INFO'];
+    $result;
+
+    if (preg_match('|^/todo/show/(\d+)$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $result = $todo_view->show($todo_id);
+    }
+    else if (preg_match('|^/todo/store$|', $route)) {
+        $task = $_REQUEST['input-task'];
+        $result = $todo_view->store(['task' => $task]);
+        header("Location: ../todo");
+    }
+    else if (preg_match('|^/todo/update/(\d+)$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $task = $_REQUEST['input-task'];
+        $result = $todo_view->update($todo_id, ['task' => $task]);
+        header("Location: ../todo");
+    }
+    else if (preg_match('|^/todo/destroy/(\d+)$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $result = $todo_view->destroy($todo_id);
+        header("Location: ../todo");
+    }
+    else if (preg_match('|^/todo/create$|', $route)) {
+        $result = $todo_view->create();
+    }
+    else if (preg_match('|^/todo/show/(\d+)/edit$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $result = $todo_view->edit($todo_id);
+    }
+    // else if (preg_match('^/todo$', $route) {
+    else {
+        $result = $todo_view->index();
+    }
+
+    return layout_view($result);
+}
+
+...
+
+</pre>
+											<p>Add application routes.</p>
+<pre>
+try {
+	...
+
+    // TODO: run application routes
+    print process_route($todo_view);
+
+    ...
+}
+</pre>
+											<p>Disable create tables message.</p>
+<pre>
+try {
+	...
+
+    // print "Create Tables\n";
+
+    ...
+}
+</pre>
+											<p>Disable tests.</p>
+<pre>
+try {
+	...
+
+    // TODO: run todo model tests
+    // test ($todo_model);
+
+    ...
+}
+</pre>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
