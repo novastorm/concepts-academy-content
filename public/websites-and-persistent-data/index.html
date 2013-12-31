@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap-theme.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="page-header">
+			<h1>Websites and Persistent Data</h1>
+			<p class="lead">This tutorial walks you through creating a website utilizing persistent data storage. You will learn how to access an SQL database and manage data for your website.</p>
+			<p>Prequisites</p>
+			<ul>
+				<li>HTML</li>
+				<li>Basic Object Oriented Programming.</li>
+				<li>Access to a MySQL Database</li>
+			</ul>
+			<p>* This tutorial intends to walk you through concepts and is designed to be langauge agnostic. Although this tutorial uses a specific language as the server side programming language, the concepts can be coded in any language.</p>
+		</div>
+
+		<div class="row">
+			<div class="panel-group" id="CGI_Responder_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#CGI_Responder_Section" href="#CGI_Responder">
+							<h4 class="panel-title">
+								CGI responder
+							</h4>
+						</a>
+					</div>
+					<div id="CGI_Responder" class="panel-collapse collapse">
+						<div class="panel-body">
+<p>Create a responder.<b>php</b> file on the website with the following code:</p>
+<pre>
+&lt;?php
+    print "Hello\n";
+?>
+</pre>
+
+<h4>Test the program</h4>
+<p>Test the program on the server</p>
+<pre>
+php responder.php
+</pre>
+
+<p>Remotely test program using cURL</p>
+<pre>
+curl -k <b>"http://__URL__/response.php"</b>
+</pre>
+
+<p>The server should respond to both with the following:</p>
+<pre>
+Hello
+</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="Design_Specifications_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#Design_Specifications_Section" href="#Design_Specifications">
+							<h4 class="panel-title">
+								Design Specifications
+							</h4>
+						</a>
+					</div>
+					<div id="Design_Specifications" class="panel-collapse collapse">
+						<div class="panel-body">
+											<p>Update the <strong>responder.php</strong> file:</p>
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+// TODO: require Configuration implementation;
+// TODO: require Database Connection implementation;
+// TODO: require Create Todo table implementation;
+// TODO: require Todo Model implementation;
+// TODO: require Todo View implementation;
+
+// TODO: create database handler
+
+// TODO: Create Todo table
+
+// TODO: Create todo model instance
+// TODO: Create todo view instance
+
+// TODO: Create Database tables
+
+// TODO: Todo model tests
+// TODO: Create layout view
+// TODO: Process routes
+
+// run application
+try {
+	// TODO: Create Tables;
+    // TODO: run todo model tests
+    // TODO: run application routes
+}
+catch (PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
+?>
+</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="SQL_Tables_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#SQL_Tables_Section" href="#SQL_Tables">
+							<h4 class="panel-title">
+								SQL Tables
+							</h4>
+						</a>
+					</div>
+					<div id="SQL_Tables" class="panel-collapse collapse">
+						<div class="panel-body">
+<p>Creating a Database table.</p>
+
+<p>Create the following files:</p>
+
+							<div class="panel-group" id="SQL_Tables_Files_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Config">
+											<h4 class="panel-title">
+												Config.php.example
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Config" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>This file contains the site specific configuration for the program.</p>
+											<p>Create the following <strong>Config.php.example</strong> file:</p>
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+class Config {
+    const Database_Engine = 'mysql';
+    const Hostname = '';
+    const Username = '';
+    const Password = '';
+    const Database = '';
+    const Table_Prefix = "EX_";
+}
+?>
+</pre>
+											<p>This file is named Config.php<strong><i>.example</i></strong> to provide an example configuration for the program. It is helpful when using version control systems to create examples for files containing private data. The example file can be checked into version control and a copy made for site specific implemention.</p>
+											<p>Copy this file to create a <strong>Config.php</strong> configured for your environment.</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Database">
+											<h4 class="panel-title">
+												Database.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Database" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>This file contains database connection initialization program.</p>
+											<p>Create the following <strong>Database.php</strong> file:</p>
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+use PDO;
+
+class Database {
+    public static function initialize ($engine, $hostname, $username, $password, $database)
+    {
+        $dsn = "$engine:host=$hostname;dbname=$database";
+
+        $dbh = new PDO($dsn, $username, $password);
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        return $dbh;
+    }
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Create_Todo">
+											<h4 class="panel-title">
+												Create_Todo.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Create_Todo" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>This file contains the Create_Todo object implementation.</p>
+											<p>Create the following <strong>Create_Todo.php</strong> file:</p>
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+class Create_Todo {
+    private static $_table_name = 'todo';
+    private static $_primary_key = 'todo_id';
+
+    private $_table_prefix;
+    private $_dbh;
+
+    public function __construct ($prefix, $dbh) {
+        $this->_table_prefix = $prefix;
+        $this->_dbh = $dbh;
+    }
+
+    protected function table () {
+        return $this->_table_prefix . self::$_table_name;
+    }
+
+    public function create () {
+        $table = $this->table();
+
+        $query = "
+            CREATE TABLE IF NOT EXISTS $table (
+                  todo_id INTEGER PRIMARY KEY AUTO_INCREMENT
+                , task TEXT
+                , completed INTEGER DEFAULT 0
+            )
+            ";
+
+        $sth = $this->_dbh->prepare($query);
+        $sth->execute();
+
+        return true;
+    }
+}
+?>
+</pre>
+											<p>The Create_Todo object creates the todo database table.</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Tables_Files_Section" href="#SQL_Tables_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Tables_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>This file contains the responder program to run tests.</p>
+											<p>Update the <strong>responder.php</strong> file:</p>
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+require 'Config.php';
+require 'Database.php';
+require 'Create_Todo.php';
+// require Todo Model implementation;
+// require Todo View implementation;
+
+use PDOException;
+
+$dbh = Database::initialize(
+      Config::Database_Engine
+    , Config::Hostname
+    , Config::Username
+    , Config::Password
+    , Config::Database
+    );
+
+$todo_table = new Create_Todo(
+      Config::Table_Prefix
+    , $dbh
+    );
+
+// TODO: Create todo model instance
+// TODO: Create todo view instance
+
+function create_tables ($tables)
+{
+    foreach ($tables as $table) {
+        $table->create();
+    }
+}
+
+// TODO: Todo model tests
+// TODO: Create layout view
+// TODO: Process routes
+
+try {
+    print "Create Tables\n";
+    create_tables([$todo_table]);
+    // TODO: run todo model tests
+    // TODO: run application routes
+}
+catch (PDOException $e) {
+    die("Error: " . $e->getMessage() . "\n");
+}
+?>
+</pre>
+											<p>This responder runs a preliminary tests of the program thus far.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br>
+							<p>Run the responder.php program</p>
+							<p>Check the database to ensure the todo table is created.</p>
+<pre>
+mysql -u USERNAME -p -D DATABASE -e "show tables"
+mysql -u USERNAME -p -D DATABASE -e "describe EX_todo"
+</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="SQL_Queries_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#SQL_Queries_Section" href="#SQL_Queries">
+							<h4 class="panel-title">
+									SQL Queries
+							</h4>
+						</a>
+					</div>
+					<div id="SQL_Queries" class="panel-collapse collapse">
+						<div class="panel-body">
+							<p>Setup the Todo_Model object methods.</p>
+							<p>Create the following <strong>Todo_Model.php</strong> file:</p>
+							<div class="panel-group" id="SQL_Queries_Command_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Todo_Model_Setup">
+											<h4 class="panel-title">
+												Todo_Model setup
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Todo_Model_Setup" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+use PDO;
+
+class Todo_Model {
+    private static $_table_name = 'todo';
+    private static $_primary_key = 'todo_id';
+
+    private $_table_prefix;
+    private $_dbh;
+
+    public function __construct ($prefix, $dbh) {
+        $this->_table_prefix = $prefix;
+        $this->_dbh = $dbh;
+    }
+
+    protected function table () {
+        return $this->_table_prefix . self::$_table_name;
+    }
+
+    // TODO: Todo index
+    // TODO: Todo show
+    // TODO: Todo store
+    // TODO: Todo update
+    // TODO: Todo destroy
+
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<br>
+								<p>The methods in this section are additional Todo_Model object methods. Add these to the Todo_model implementation.</p>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Show_Record_list">
+											<h4 class="panel-title">
+												Show Record Index
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Show_Record_list" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo index
+    public function index () {
+        $table = $this->table();
+
+        $query = "
+            SELECT * FROM $table
+            ";
+
+        $sth = $this->_dbh->prepare($query);
+        $sth->execute();
+
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Show_Record">
+											<h4 class="panel-title">
+												Show Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Show_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo show
+    public function show ($id) {
+        if (! is_numeric($id)) {
+            return false;
+        }
+
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
+
+        $query = "
+            SELECT * FROM $table
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, PDO::PARAM_INT);
+        $sth->execute();
+
+        return $sth->fetch(PDO::FETCH_ASSOC);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Store_Record">
+											<h4 class="panel-title">
+												Store Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Store_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo store
+    public function store ($task) {
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
+
+        $query = "
+            INSERT INTO $table(task)
+            VALUES (:task)
+            ";
+
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':task', $task, PDO::PARAM_STR);
+        $sth->execute();
+
+        return true;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Update_Record">
+											<h4 class="panel-title">
+												Update Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Update_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo update
+    public function update ($id, $task) {
+        if (! is_numeric($id)) {
+            return false;
+        }
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
+
+        $query = "
+            UPDATE $table
+            SET task = :task
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, PDO::PARAM_INT);
+        $sth->bindParam(':task', $task, PDO::PARAM_STR);
+        $sth->execute();
+
+        return true;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Destroy_Record">
+											<h4 class="panel-title">
+												Destroy Record
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Destroy_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo destroy
+    public function destroy ($id) {
+        if (! is_numeric($id)) {
+            return false;
+        }
+        $table = $this->table();
+        $primary_key = self::$_primary_key;
+
+        $query = "
+            DELETE FROM $table
+            WHERE $primary_key = :todo_id
+            ";
+
+        $sth = $this->_dbh->prepare($query);
+        $sth->bindParam(':todo_id', $id, PDO::PARAM_INT);
+        $sth->execute();
+
+        return true;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#SQL_Queries_Command_Section" href="#SQL_Queries_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="SQL_Queries_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>Add the todo model and test functions:</p>
+<pre>
+...
+
+// require Todo Model implementation;
+require 'Todo_Model.php';
+
+
+...
+
+// TODO: Create todo model instance
+$todo_model = new Todo_Model(
+      Config::Table_Prefix
+    , $dbh
+    );
+
+...
+
+// TODO: Todo model tests
+function test ($todo_model)
+{
+    print "Index:\n";
+    print json_encode($todo_model->index()) . "\n";
+
+    print "Store: ";
+    print json_encode($todo_model->store("Task 1")) . "\n";
+    print json_encode($todo_model->index()) . "\n";
+    $record_id = $todo_model->index()[0]['todo_id'];
+
+    print "Show: ";
+    $record = $todo_model->show($record_id);
+    print json_encode($record) . "\n";
+
+    print "Update: ";
+    print json_encode($todo_model->update($record['todo_id'], "Task A")) . "\n";
+    print json_encode($todo_model->index()) . "\n";
+
+    print "Destroy: ";
+    print json_encode($todo_model->destroy($record['todo_id'])) . "\n";
+    print json_encode($todo_model->index()) . "\n";
+}
+
+...
+
+</pre>
+											<p>Additional Todo object tests. Replace the try block in the responder with he following:</p>
+<pre>
+try {
+	...
+
+    // TODO: run todo model tests
+    test ($todo_model);
+
+    ...
+}
+</pre>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br>
+							<p>Run the responder.php program. If all went well, the responder shows the results</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="SQL_Injection_Warning_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#SQL_Injection_Warning_Section" href="#SQL_Injection_Warning">
+							<h4 class="panel-title">
+								SQL Injection Warning
+							</h4>
+						</a>
+					</div>
+					<div id="SQL_Injection_Warning" class="panel-collapse collapse">
+						<div class="panel-body">
+							<p>In data driven applications, <a href="http://en.wikipedia.org/wiki/SQL_injection">SQL injection</a> is an attack inserted into a form entry field intended for exection by the database server. When taking inputs from the user, the program must sanitize the input values to prevent this from occuring.</p>
+							<p>In the following code snippet, notice there is a placeholder where the query requires the todo_id value. After the query is prepared the program performs checks on the todo_id value then binds the intended value to the statement handler before executing the SQL query.</p>
+<p><pre>
+$query = "
+    SELECT * FROM $table
+    WHERE $primary_key = <b>:todo_id</b>
+    ";
+
+$sth = $this->dbh->prepare($query);
+$sth->bindParam('<b>:todo_id</b>', $id, \PDO::PARAM_INT);
+$sth->execute();
+</pre></p>
+							<p><span class="text-danger">Always assume that someone is going to maliciously attack your program.</span> Deny all access, allow only what is needed, and be sure to sanitize all input from outside the program.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="panel-group" id="Application_View_Section">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<a data-toggle="collapse" data-parent="#Application_View_Section" href="#Application_View">
+							<h4 class="panel-title">
+								Application View
+							</h4>
+						</a>
+					</div>
+					<div id="Application_View" class="panel-collapse collapse">
+						<div class="panel-body">
+							<p>Setup the Todo_View object methods.</p>
+							<p>Create the following <strong>Todo_View.php</strong> file:</p>
+							<div class="panel-group" id="Application_View_Command_Section">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Todo_View_Setup">
+											<h4 class="panel-title">
+												Todo_View setup
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Todo_View_Setup" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+&lt;?php
+namespace Websites_And_Persistent_Data;
+
+require 'Todo_Model.php';
+
+class Todo_View {
+    private $_model;
+
+    public function __construct ($model)
+    {
+        $this->_model = $model;
+    }
+
+    // TODO: Todo view index
+    // TODO: Todo view show
+    // TODO: Todo view store
+    // TODO: Todo view update
+    // TODO: Todo view destroy
+    // TODO: Todo view create
+    // TODO: Todo view edit
+}
+?>
+</pre>
+										</div>
+									</div>
+								</div>
+								<br>
+								<p>The methods in this section are additional Todo_View object methods. Add these to the Todo_View implementation.</p>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Show_Record_list">
+											<h4 class="panel-title">
+												Show Record Index
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Show_Record_list" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view index
+    public function index ()
+    {
+        $record_list = $this->_model->index();
+        // $output = json_encode($record_list);
+        $output = "";
+        $output .= &lt;&lt;&lt;EOF
+&lt;h2>Todo List &lt;a href="responder.php/todo/create">&lt;button>New&lt;/button>&lt;/a>&lt;/h2>
+EOF;
+        $output .= "&lt;table>\n";
+
+        foreach ($record_list as $record) {
+            $todo_id = $record['todo_id'];
+            $task = $record['task'];
+
+            $output .= &lt;&lt;&lt;EOF
+&lt;tr>
+    &lt;td>&lt;a href="responder.php/todo/show/$todo_id">$task&lt;/a>&lt;/td>
+    &lt;td>&lt;a href="responder.php/todo/show/$todo_id/edit">edit&lt;/a>&lt;/td>
+    &lt;td>&lt;a href="responder.php/todo/destroy/$todo_id">destroy&lt;/a>&lt;/td>
+&lt;/tr>
+EOF;
+        }
+
+        $output .= "\n&lt;/table>\n";
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Show_Record">
+											<h4 class="panel-title">
+												Show Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Show_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view show
+    public function show ($id)
+    {
+        $record = $this->_model->show($id);
+
+        $todo_id = $record['todo_id'];
+        $task = $record['task'];
+
+        $output = &lt;&lt;&lt;EOF
+&lt;dl>
+    &lt;dt>ID:&lt;/dt>
+    &lt;dd>$todo_id&lt;/dd>
+    &lt;dt>Task:&lt;/dt>
+    &lt;dd>$task&lt;/dd>
+&lt;/dl>
+EOF;
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Store_Record">
+											<h4 class="panel-title">
+												Store Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Store_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view store
+    public function store ($param)
+    {
+        return $this->_model->store($param['task']);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Update_Record">
+											<h4 class="panel-title">
+												Update Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Update_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view update
+    public function update ($id, $param)
+    {
+        return $this->_model->update($id, $param['task']);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Destroy_Record">
+											<h4 class="panel-title">
+												Destroy Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Destroy_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view destroy
+    public function destroy ($id)
+    {
+        return $this->_model->destroy($id);
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Create_Record">
+											<h4 class="panel-title">
+												Create Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Create_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view create
+    public function create ()
+    {
+        $output = <<< EOF
+&lt;form action="responder.php/todo/store">
+    &lt;label for="input-task">Task&lt;/label>
+    &lt;input type="text" name="input-task" placeholder="Task">
+    &lt;button type="submit">Add Task&lt;/button>
+&lt;/form>
+EOF;
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Edit_Record">
+											<h4 class="panel-title">
+												Edit Record
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Edit_Record" class="panel-collapse collapse">
+										<div class="panel-body">
+<pre>
+    // TODO: Todo view edit
+    public function edit ($id)
+    {
+        $record = $this->_model->show($id);
+
+        $todo_id = $record['todo_id'];
+        $task = $record['task'];
+
+        $output = <<< EOF
+&lt;form action="responder.php/todo/update/$todo_id">
+    &lt;label for="input-task">Task&lt;/label>
+    &lt;input type="text" name="input-task" value="$task" placeholder="Task">
+    &lt;button type="submit">Update Task&lt;/button>
+&lt;/form>
+EOF;
+        return $output;
+    }
+</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<a data-toggle="collapse" data-parent="#Application_View_Command_Section" href="#Application_View_Responder">
+											<h4 class="panel-title">
+												responder.php
+											</h4>
+										</a>
+									</div>
+									<div id="Application_View_Responder" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>Add the todo view and route functions:</p>
+<pre>
+...
+
+// require Todo View implementation;
+require 'Todo_View.php';
+
+...
+
+// TODO: Create todo view instance
+$todo_view = new Todo_View($todo_model);
+
+...
+
+// TODO: Create layout view
+function layout_view ($body)
+{
+    $output = &lt;&lt;&lt;EOF
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+    &lt;base href="https://192.168.33.10/content/websites-and-persistent-data/">
+&lt;/head>
+&lt;body>
+$body
+&lt;/body>
+&lt;/html>
+EOF;
+    return $output;
+}
+
+...
+
+// TODO: Process routes
+function process_route ($todo_view)
+{
+    $route = $_SERVER['PATH_INFO'];
+    $result;
+
+    if (preg_match('|^/todo/show/(\d+)$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $result = $todo_view->show($todo_id);
+    }
+    else if (preg_match('|^/todo/store$|', $route)) {
+        $task = $_REQUEST['input-task'];
+        $result = $todo_view->store(['task' => $task]);
+        header("Location: ../todo");
+    }
+    else if (preg_match('|^/todo/update/(\d+)$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $task = $_REQUEST['input-task'];
+        $result = $todo_view->update($todo_id, ['task' => $task]);
+        header("Location: ../todo");
+    }
+    else if (preg_match('|^/todo/destroy/(\d+)$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $result = $todo_view->destroy($todo_id);
+        header("Location: ../todo");
+    }
+    else if (preg_match('|^/todo/create$|', $route)) {
+        $result = $todo_view->create();
+    }
+    else if (preg_match('|^/todo/show/(\d+)/edit$|', $route, $matches)) {
+        $todo_id = $matches[1];
+        $result = $todo_view->edit($todo_id);
+    }
+    // else if (preg_match('^/todo$', $route) {
+    else {
+        $result = $todo_view->index();
+    }
+
+    return layout_view($result);
+}
+
+...
+
+</pre>
+											<p>Add application routes.</p>
+<pre>
+try {
+	...
+
+    // TODO: run application routes
+    print process_route($todo_view);
+
+    ...
+}
+</pre>
+											<p>Disable create tables message.</p>
+<pre>
+try {
+	...
+
+    // print "Create Tables\n";
+
+    ...
+}
+</pre>
+											<p>Disable tests.</p>
+<pre>
+try {
+	...
+
+    // TODO: run todo model tests
+    // test ($todo_model);
+
+    ...
+}
+</pre>
+										</div>
+									</div>
+								</div>
+								<br>
+								<p>Run the program using a web browser. Enter the URL into the web browser:</p>
+<pre>
+<b>http://__URL__/responder.php</b>
+</pre>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h3>Conclusion</h3>
+
+
+	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+</body>
+</html>
+
